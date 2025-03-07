@@ -2,6 +2,7 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <vector>
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -21,7 +22,7 @@ public:
   * @brief Destroy the Heap object
   * 
   */
-  ~Heap();
+  ~Heap() = default;
 
   /**
    * @brief Push an item to the heap
@@ -59,16 +60,27 @@ public:
    */
   size_t size() const;
 
+  void heapifyDown(size_t index);
+
+  void heapifyUp(size_t index);
+
 private:
   /// Add whatever helper functions and data members you need below
 
-
-
+  std::vector<T>data;
+  int m_;
+  PComparator comp_;
 
 };
 
 // Add implementation of member functions here
 
+template <typename T, typename PComparator>
+Heap<T, PComparator>::Heap(int m, PComparator c): m_(m), comp_(c){
+  if(m < 2){
+    throw std::invalid_argument("Invalid d-nary");
+  }
+}
 
 // We will start top() for you to handle the case of 
 // calling top on an empty heap
@@ -78,19 +90,51 @@ T const & Heap<T,PComparator>::top() const
   // Here we use exceptions to handle the case of trying
   // to access the top element of an empty heap
   if(empty()){
+    throw std:: underflow_error("Heap is empty cannot access top.");
     // ================================
     // throw the appropriate exception
     // ================================
-
-
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
-
+   return data[0];
 
 }
 
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::heapifyDown(size_t index){
+
+  
+  size_t priority = index;
+
+  for(size_t i = 1; i <= m_; ++i){
+    size_t childIndex = m_ * index + i; 
+    if(childIndex < data.size() && comp_(data[childIndex],data[priority])){
+      priority = childIndex;
+    }
+  }
+
+  if(priority != index){
+    std::swap(data[index], data[priority]);
+    heapifyDown(priority);
+  }
+
+}
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::heapifyUp(size_t index){
+
+  if(index == 0){
+    return;
+  }
+
+  size_t parentIndex = (index -1)/m_;
+
+  if(comp_(data[index],data[parentIndex])){
+    std::swap(data[index],data[parentIndex]);
+    heapifyUp(parentIndex);
+  }
+}
 
 // We will start pop() for you to handle the case of 
 // calling top on an empty heap
@@ -101,13 +145,39 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
-
-
+    throw std:: underflow_error("Heap is empty cannot access top.");
   }
 
+   std::swap(data[0],data.back());
+   data.pop_back();
 
-
+   if(!empty()){
+   heapifyDown(0);
+   }
 }
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::push(const T& item){
+
+  data.push_back(item);
+  heapifyUp(data.size() -1);
+}
+
+template <typename T, typename PComparator>
+size_t Heap<T, PComparator>::size()const{
+  return data.size();
+}
+
+template <typename T, typename PComparator>
+bool Heap<T, PComparator>::empty()const{
+  return data.empty();
+}
+
+
+
+
+
+
 
 
 

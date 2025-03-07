@@ -25,14 +25,24 @@ class And2Gate : public Gate
 {
   public:
       And2Gate(Wire*, Wire*, Wire*);
-      Event* update(uint64_t);  
+      Event* update(uint64_t) override;  
 };
 
 class Or2Gate : public Gate
 {
   public:
       Or2Gate(Wire*, Wire*, Wire*);
-      Event* update(uint64_t);
+      Event* update(uint64_t) override;
 };
+
+class NotGate : public Gate
+{
+
+  public:
+      NotGate(Wire* in, Wire* out, uint64_t current_time);
+      Event* update(uint64_t delay) override;
+};
+
+
 
 #endif
