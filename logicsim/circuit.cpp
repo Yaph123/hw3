@@ -115,7 +115,7 @@ bool Circuit::parse(const char* fname)
                   std:: string s_in, s_out;
                   getline(ss, s_in, ',');
                   getline(ss, s_out, ',');
-                  m_gates.push_back(new NotGate(m_wires[stoi(s_in)],m_wires[stoi(s_out)],1));
+                  m_gates.push_back(new NotGate(m_wires[stoi(s_in)],m_wires[stoi(s_out)],0));
                 }
                 else{
                   std::cerr <<"UKNOWN Gate type: " << s_type << std::endl;
